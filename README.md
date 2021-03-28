@@ -26,3 +26,9 @@ cross-env 是用来解决在不同环境(windows、mac)下设置环境变量的�
 `config.devtool = '#cheap-module-eval-source-map',` 替换为以下写法即可：
 
 `config.devtool = isDev ? false : '#cheap-module-eval-source-map',`
+
+### 5. `npm run dev` 报错 `Cannot find module 'babel-plugin-syntax-jsx'.`
+
+报错原因：缺少相应组件
+
+解决：`npm install babel-plugin-syntax-jsx --save-dev` 即可
