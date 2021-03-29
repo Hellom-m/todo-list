@@ -5,26 +5,33 @@
         type="text"
         class="add-input"
         placeholder="接下去要做什么？"
-        @keyup.enter="addTodo()"
+        @keyup.enter="addTodo($event)"
       />
-      <item :todo="todo"></item>
-      <tabs :filter="filter"></tabs>
+
+      <item
+        @delTodo="delTodo"
+        v-for="(todo,i) in filterTodos"
+        :todo="todo"
+        :key="i"
+      ></item>
+      <tabs
+        :filter="filter"
+        :todos="list"
+        @toggle="toggle"
+        @clearAll="clearAll"
+      ></tabs>
     </section>
   </div>
 </template>
 
 <script>
+let id = 0;
 import item from "../todo/item.vue";
 import tabs from "../todo/tabs.vue";
 export default {
   name: "todo",
   data() {
     return {
-      todo: {
-        id: 0,
-        content: "this is todo",
-        completed: false,
-      },
       list: [],
       filter: "all",
     };
@@ -33,8 +40,41 @@ export default {
     item,
     tabs,
   },
+  computed: {
+
+    filterTodos() {
+      if (this.filter === 'all') {
+        return this.list;
+      }
+
+      const completed = this.filter === 'completed';
+      return this.list.filter(item => item.completed === completed);
+    }
+
+  },
   methods: {
-    addTodo() {},
+    // 删除当前的todo
+    delTodo(id) {
+      this.list.splice(this.list.findIndex(item => item.id === id), 1);
+    },
+    // 新增一个 todo
+    addTodo(e) {
+      this.list.unshift({
+        id: id++,
+        content: e.target.value.trim(),
+        completed: false
+      })
+      e.target.value = '';
+    },
+    // 切换todo 状态
+    toggle(state) {
+      this.filter = state;
+    },
+    // 清除所有已完成的todo
+    clearAll() {
+      this.list = this.list.filter(item => !item.completed);
+    }
+
   },
 };
 </script>

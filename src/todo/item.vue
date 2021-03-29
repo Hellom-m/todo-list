@@ -1,8 +1,15 @@
 <template>
   <div :class="['todo-item', todo.completed ? 'completed' : '']">
-    <input type="checkbox" class="toggle" v-model="todo.completed" />
+    <input
+      type="checkbox"
+      class="toggle"
+      v-model="todo.completed"
+    />
     <label>{{ todo.content }}</label>
-    <button class="destroy" @click="destroy"></button>
+    <button
+      class="destroy"
+      @click="destroy"
+    ></button>
   </div>
 </template>
 
@@ -20,10 +27,11 @@ export default {
     },
   },
   mounted() {
-    console.log(this.props.todo);
   },
   methods: {
-    destroy() {},
+    destroy() {
+      this.$emit('delTodo', this.todo.id);
+    },
   },
 };
 </script>
@@ -65,9 +73,13 @@ export default {
     top: 0;
     bottom: 0;
     margin: auto 0;
-    border: none;
-    appearance: none;
     outline: none;
+    -webkit-appearance: none; /*去除默认样式*/
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -o-appearance: none;
+    -ms-appearance: none;
+
     &:after {
       content: url("../assets/images/unChecked.svg");
     }
