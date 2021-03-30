@@ -59,13 +59,16 @@ export default {
     },
     // 新增一个 todo
     addTodo(e) {
-      this.list.unshift({
-        id: id++,
-        content: e.target.value.trim(),
-        completed: false
-      })
-      e.target.value = '';
+      if (e.target.value) {
+        this.list.unshift({
+          id: id++,
+          content: e.target.value.trim(),
+          completed: false
+        })
+        e.target.value = '';
+      }
     },
+    
     // 切换todo 状态
     toggle(state) {
       this.filter = state;
