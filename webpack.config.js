@@ -49,10 +49,18 @@ const config = {
         new MiniCssExtractPlugin({
             filename: '[name].css',
             chunkFilename: '[id].css',
-            ignoreOrder: false, 
+            ignoreOrder: false,
         }),
-    ]
+    ],
 
+    optimization: {
+        splitChunks: {
+            name: 'vendor'
+        },
+        runtimeChunk: {
+            name: 'runtime'
+        },
+    }
 }
 
 if (isDev) {
@@ -95,6 +103,11 @@ if (isDev) {
         new webpack.NoEmitOnErrorsPlugin()
     )
 } else {
+    // 单独打包类库 需要使用chunkhash
+    config.entry = {
+        app: path.join(__dirname, 'src/index.js'),
+        vendor: ['vue']
+    }
     config.output.filename = '[name].[chunkhash:8].js'
     config.module.rules.push({
         test: /\.less$/,
