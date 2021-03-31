@@ -23,7 +23,7 @@ export default {
   name: "tabs",
   data() {
     return {
-      states: ["all", "active", "completed"],
+      states: ["All", "Active", "Completed"],
     };
   },
   props: {
