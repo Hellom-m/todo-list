@@ -1,7 +1,8 @@
+const webpack = require('webpack');
 const path = require('path');
 const { VueLoaderPlugin } = require('vue-loader');
 const HTMLPlugin = require('html-webpack-plugin');
-const webpack = require('webpack');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -10,7 +11,7 @@ const config = {
     target: 'web',
     entry: path.join(__dirname, 'src/index.js'),
     output: {
-        filename: 'bundle.js',
+        filename: 'bundle.[hash:8].js',
         path: path.join(__dirname, 'dist')
     },
     module: {
@@ -20,36 +21,10 @@ const config = {
                 loader: 'vue-loader'
             },
             {
-                test: /\.css$/,
-                use: ['style-loader', 'css-loader',]
-            },
-            {
                 test: /\.jsx$/,
                 loader: 'babel-loader'
             },
-            // stylus-loader专门用来处理stylus文件，处理好后变成.css文件，交给css-loader。webpack的loader就是这样一级一级的向上处理，每一层loader只处理自己关心的部分
-            {
-                test: /\.styl$/,
-                use: [
-                    'style-loader',
-                    'css-loader',
-                    {
-                        loader: 'postcss-loader',
-                        options: {
-                            sourceMap: true
-                        }
-                    },
-                    'stylus-loader'
-                ]
-            },
-            {
-                test: /\.less$/,
-                use: [
-                    'style-loader',
-                    'css-loader',
-                    'less-loader'
-                ]
-            },
+
             // 将小于1024的图片装换为Base64,减少http请求
             {
                 test: /\.(gif|jpg|jpeg|svg|png)$/,
@@ -70,12 +45,41 @@ const config = {
             }
         }),
         new VueLoaderPlugin(),
-        new HTMLPlugin()
+        new HTMLPlugin(),
+        new MiniCssExtractPlugin({
+            filename: '[name].css',
+            chunkFilename: '[id].css',
+            ignoreOrder: false, 
+        }),
     ]
 
 }
 
 if (isDev) {
+    config.module.rules.push({
+        // css 预处理器 使用模块化方式写css代码
+        // stylus-loader专门用来处理stylus文件，处理好后变成.css文件，交给css-loader。webpack的loader就是这样一级一级的向上处理，每一层loader只处理自己关心的部分
+        test: /\.styl$/,
+        use: [
+            'style-loader',
+            'css-loader',
+            {
+                loader: 'postcss-loader',
+                options: {
+                    sourceMap: true
+                }
+            },
+            'stylus-loader'
+        ]
+    },
+        {
+            test: /\.less$/,
+            use: [
+                'style-loader',
+                'css-loader',
+                'less-loader'
+            ]
+        })
     config.devtool = isDev ? false : '#cheap-module-eval-source-map',
         config.devServer = {
             port: 8000,
@@ -89,6 +93,18 @@ if (isDev) {
     config.plugins.push(
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoEmitOnErrorsPlugin()
+    )
+} else {
+    config.output.filename = '[name].[chunkhash:8].js'
+    config.module.rules.push({
+        test: /\.less$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader']
+    })
+    config.plugins.push(
+        new MiniCssExtractPlugin({
+            filename: 'styles.[contentHash:8].css',
+            chunkFilename: '[id].css',
+        }),
     )
 }
 

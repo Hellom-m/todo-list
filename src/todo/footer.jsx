@@ -4,7 +4,7 @@ export default {
     render() {
         return (
             <div id="footer">
-                <span> Written by HuaMeng</span>
+                <span> Written by HUAMENG</span>
             </div>
         )
     }

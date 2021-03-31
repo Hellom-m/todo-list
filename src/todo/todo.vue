@@ -68,7 +68,7 @@ export default {
         e.target.value = '';
       }
     },
-    
+
     // 切换todo 状态
     toggle(state) {
       this.filter = state;
@@ -98,9 +98,7 @@ export default {
     box-sizing: border-box;
     outline: none;
     border: none;
-    // border: 1px solid #999;
     box-shadow: inset 0 -1px 5px 0 rgb(0 0 0 / 20%);
-    // box-shadow: inset 0 -2px 1px rgb(0 0 0 / 3%);
   }
 
   input::-webkit-input-placeholder {
